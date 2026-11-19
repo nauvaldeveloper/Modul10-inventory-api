@@ -16,5 +16,12 @@ foreach (['framework/cache/data', 'framework/sessions', 'framework/views'] as $d
     } 
 } 
  
-$app->useStoragePath($storage); 
+$app->useStoragePath($storage);
+
+// Vercel runs this file as /api/index.php, so Symfony would treat "/api" as the
+// base path and strip it (turning /api/products into /products). Pretend the
+// front controller lives at the web root so Laravel sees the full URI.
+$_SERVER['SCRIPT_NAME'] = '/index.php';
+$_SERVER['PHP_SELF'] = '/index.php';
+
 $app->handleRequest(Request::capture()); 
